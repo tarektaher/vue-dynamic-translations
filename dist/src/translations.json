@@ -1,0 +1,10 @@
+{
+    "en": {
+        "greeting": "Hello, :name!",
+        "farewell": "Goodbye, :name!"
+    },
+    "fr": {
+        "greeting": "Bonjour, :name!",
+        "farewell": "Au revoir, :name!"
+    }
+}

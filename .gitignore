@@ -1,0 +1,45 @@
+# Node modules
+/node_modules
+
+# Laravel specific
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+
+# Vendor directory
+/vendor
+
+# Environment files
+.env
+.env.backup
+.env.production
+
+# PHPUnit cache
+/.phpunit.cache
+.phpunit.result.cache
+
+# IDE/System specific
+/.fleet
+/.idea
+/.vscode
+/.zed
+.DS_Store
+Thumbs.db
+
+# Package managers
+npm-debug.log*
+yarn-error.log
+
+# Lock files
+/composer.lock
+/package-lock.json
+
+# Laravel-specific
+Homestead.json
+Homestead.yaml
+auth.json
+
+# PHPActor
+.phpactor.json

@@ -1,0 +1,24 @@
+{
+  "name": "vue-dynamic-translations",
+  "version": "1.0.2",
+  "description": "A simple and flexible Vue 3 package for translations with dynamic JSON path support.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Tarek Taher",
+  "license": "MIT",
+  "dependencies": {
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
