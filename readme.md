@@ -10,7 +10,7 @@ Vue Dynamic Translations is a powerful Vue.js plugin that enables dynamic and fl
 - 🚀 Lightweight and performant
 - 📦 Easy integration with Vue applications
 - 🔍 Support for nested translation keys
-- 💻 Compatible with Vue 2 and Vue 3
+- 💻 Compatible with Vue 3
 - 🌈 Flexible translation management
 
 ## Installation
