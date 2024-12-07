@@ -1,13 +1,15 @@
 type Translations = Record<string, Record<string, string | undefined>>;
 
-declare const translations: Translations; // Ensure `translations` is globally defined or imported
-// Function to set the translations file path and load it
+// Mutable global `translations` object
+let translations: Translations = {};
+
+// Function to update the global translations object
 export const setTranslations = (newTranslations: Translations): void => {
     if (typeof newTranslations !== "object" || newTranslations === null || Array.isArray(newTranslations)) {
         throw new Error("Invalid translations object. Must be a valid JSON object.");
     }
 
-    // Update the global translations object
+    // Merge the new translations into the existing translations object
     Object.keys(newTranslations).forEach((lang) => {
         translations[lang] = {
             ...(translations[lang] || {}),
@@ -30,7 +32,10 @@ export function useGetTranslation() {
         // Helper function to retrieve nested values
         const getAltValue = (object: Record<string, any>, keys: string): string | undefined => {
             const path = allowKeyDotSplitting ? keys.split(".") : [keys];
-            return path.reduce((o: any, k: string) => (o && o[k] !== undefined ? o[k] : undefined), object);
+            return path.reduce(
+                (o: any, k: string) => (o && typeof o === "object" && k in o ? o[k] : undefined),
+                object
+            );
         };
 
         // Attempt to get the translation for the current language
@@ -54,5 +59,3 @@ export function useGetTranslation() {
 
     return { translate };
 }
-
-
