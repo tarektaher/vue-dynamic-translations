@@ -1,5 +1,5 @@
 let translations: Record<string, any> = {}; // Store translations dynamically
-
+type Replacements = Record<string, string>
 // Function to set the translations file path and load it
 export const setTranslations = (newTranslations: object) => {
     if (typeof newTranslations !== "object" || newTranslations === null) {
@@ -15,7 +15,11 @@ export function useGetTranslation() {
         allowKeyDotSplitting: boolean = true
     ): string => {
         const lang = document.documentElement.lang || "en";
-        const word = getAltValue(translations[lang], key, allowKeyDotSplitting) || key;
+
+        // Safely retrieve the translation
+        const word = getAltValue(translations[lang], key, allowKeyDotSplitting)
+            || getFallbackValue(key)
+            || key;
 
         return applyReplacements(word, replacements);
     };
@@ -30,6 +34,12 @@ export function useGetTranslation() {
             (result, [key, value]) => result.replace(new RegExp(`:${key}`, "g"), value),
             str
         );
+    };
+
+    const getFallbackValue = (key: string): string | null => {
+        // Cast the querySelector result to HTMLMetaElement
+        const fallbackLocale = (document.querySelector('meta[name="fallback_locale"]') as HTMLMetaElement | null)?.content || "en";
+        return getAltValue(translations[fallbackLocale], key, true);
     };
 
     return { translate };
