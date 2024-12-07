@@ -1,15 +1,12 @@
 let translations: Record<string, any> = {}; // Store translations dynamically
-let translationsPath: string | null = null; // Store the path to translations.json
 
 // Function to set the translations file path and load it
-export const setTranslationsPath = async (path: string) => {
-    const response = await fetch(path); // Fetch JSON from the relative path
-    if (!response.ok) {
-        throw new Error(`Failed to load translations from ${path}`);
+export const setTranslations = (newTranslations: object) => {
+    if (typeof newTranslations !== "object" || newTranslations === null) {
+        throw new Error("Invalid translations object. Must be a valid JSON object.");
     }
-    translations = await response.json();
+    translations = newTranslations; // Update the global translations variable
 };
-
 
 export function useGetTranslation() {
     const translate = (
@@ -17,10 +14,6 @@ export function useGetTranslation() {
         replacements: Record<string, string> = {},
         allowKeyDotSplitting: boolean = true
     ): string => {
-        if (!translationsPath) {
-            throw new Error("Translations path is not set. Call `setTranslationsPath` first.");
-        }
-
         const lang = document.documentElement.lang || "en";
         const word = getAltValue(translations[lang], key, allowKeyDotSplitting) || key;
 

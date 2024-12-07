@@ -1,15 +1,13 @@
 let translations = {}; // Store translations dynamically
-let translationsPath = null; // Store the path to translations.json
 // Function to set the translations file path and load it
-export const setTranslationsPath = async (path) => {
-    translationsPath = path;
-    translations = await import(path).then((module) => module.default);
+export const setTranslations = (newTranslations) => {
+    if (typeof newTranslations !== "object" || newTranslations === null) {
+        throw new Error("Invalid translations object. Must be a valid JSON object.");
+    }
+    translations = newTranslations; // Update the global translations variable
 };
 export function useGetTranslation() {
     const translate = (key, replacements = {}, allowKeyDotSplitting = true) => {
-        if (!translationsPath) {
-            throw new Error("Translations path is not set. Call `setTranslationsPath` first.");
-        }
         const lang = document.documentElement.lang || "en";
         const word = getAltValue(translations[lang], key, allowKeyDotSplitting) || key;
         return applyReplacements(word, replacements);
