@@ -1,6 +1,6 @@
 {
   "name": "vue-dynamic-translations",
-  "version": "1.0.5-0",
+  "version": "1.0.5-1",
   "description": "A simple and flexible Vue 3 package for translations with dynamic JSON path support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
