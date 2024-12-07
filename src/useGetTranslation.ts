@@ -1,11 +1,19 @@
-let translations: Record<string, any> = {}; // Store translations dynamically
-type Replacements = Record<string, string>
+type Translations = Record<string, Record<string, string | undefined>>;
+
+declare const translations: Translations; // Ensure `translations` is globally defined or imported
 // Function to set the translations file path and load it
-export const setTranslations = (newTranslations: object) => {
-    if (typeof newTranslations !== "object" || newTranslations === null) {
+export const setTranslations = (newTranslations: Translations): void => {
+    if (typeof newTranslations !== "object" || newTranslations === null || Array.isArray(newTranslations)) {
         throw new Error("Invalid translations object. Must be a valid JSON object.");
     }
-    translations = newTranslations; // Update the global translations variable
+
+    // Update the global translations object
+    Object.keys(newTranslations).forEach((lang) => {
+        translations[lang] = {
+            ...(translations[lang] || {}),
+            ...newTranslations[lang],
+        };
+    });
 };
 
 export function useGetTranslation() {
@@ -16,31 +24,35 @@ export function useGetTranslation() {
     ): string => {
         const lang = document.documentElement.lang || "en";
 
-        // Safely retrieve the translation
-        const word = getAltValue(translations[lang], key, allowKeyDotSplitting)
-            || getFallbackValue(key)
-            || key;
-
-        return applyReplacements(word, replacements);
-    };
-
-    const getAltValue = (object: any, keys: string, allowKeyDotSplitting: boolean): any => {
-        const path = allowKeyDotSplitting ? keys.split(".") : [keys];
-        return path.reduce((o, k) => (o || {})[k], object);
-    };
-
-    const applyReplacements = (str: string, replacements: Record<string, string>): string => {
-        return Object.entries(replacements).reduce(
-            (result, [key, value]) => result.replace(new RegExp(`:${key}`, "g"), value),
-            str
-        );
-    };
-
-    const getFallbackValue = (key: string): string | null => {
-        // Cast the querySelector result to HTMLMetaElement
+        // Get the fallback locale from a meta tag
         const fallbackLocale = (document.querySelector('meta[name="fallback_locale"]') as HTMLMetaElement | null)?.content || "en";
-        return getAltValue(translations[fallbackLocale], key, true);
+
+        // Helper function to retrieve nested values
+        const getAltValue = (object: Record<string, any>, keys: string): string | undefined => {
+            const path = allowKeyDotSplitting ? keys.split(".") : [keys];
+            return path.reduce((o: any, k: string) => (o && o[k] !== undefined ? o[k] : undefined), object);
+        };
+
+        // Attempt to get the translation for the current language
+        let word = getAltValue(translations[lang], key);
+
+        // Fallback to the fallback locale if not found
+        if (!word) {
+            word = getAltValue(translations[fallbackLocale], key) || key;
+        }
+
+        // Apply replacements to the translation
+        word = Object.entries(replacements).reduce(
+            (result, [placeholder, value]) =>
+                result.replace(new RegExp(`:${placeholder}`, "g"), value),
+            word
+        );
+
+        // Return the translation or fallback to the key
+        return word || key;
     };
 
     return { translate };
 }
+
+
